@@ -178,13 +178,21 @@ export type ParamsForCreate<T> = {{ data: T }};
 export type ParamsForUpdate<T> = {{ id: string, data: T }};
 
 export type ParamsList<T> = {{
-  filters?: Array<T & Record<string, any>>,
+  filters?: Partial<Record<keyof T, any>>[],
   list_options?: {{
     limit?: number,
     offset?: number,
     order_bys?: string,
   }}
 }};
+
+const reqConfig: RequestInit = {{
+        method: "POST",
+        headers: {{
+          "Content-Type": "application/json",
+        }},
+        credentials: "include",
+      }};
 "#
     ));
 
@@ -434,12 +442,12 @@ fn create_client_from_handler_params(
         ""
     };
 
-    if handler_name == "list_patients" {
-        println!("{handler_params:#?}");
-        println!("client_param_name: {client_param_name}");
-        println!("hadnler_param_type: {handler_param_type:#?}");
-        println!("params: {params_object}")
-    }
+    // if handler_name == "list_patients" {
+    //     println!("{handler_params:#?}");
+    //     println!("client_param_name: {client_param_name}");
+    //     println!("hadnler_param_type: {handler_param_type:#?}");
+    //     println!("params: {params_object}")
+    // }
 
     // FIXME: figure this out later
     // if client_param_type.contains("ParamsForUpdate<"){
@@ -449,11 +457,7 @@ fn create_client_from_handler_params(
     let function = format!(
         r#"    async {handler_name}({client_param_name}{colon}{client_param_type}) {{
       const happyPath = async () => fetch(`${{baseApiUrl}}/api/rpc`, {{
-        method: "POST",
-        headers: {{
-          "Content-Type": "application/json",
-        }},
-        credentials: "include",
+        ...reqConfig,
         body: JSON.stringify({{
           id: 1,
           jsonrpc: "2.0",
