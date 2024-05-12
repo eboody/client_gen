@@ -416,7 +416,8 @@ fn create_client_from_handler_params(
     let mut params_object = String::from("");
 
     if handler_param_type.contains("ParamsForCreate") {
-        params_object += &format!("\"data\": {client_param_name},");
+        client_param_name = "params".to_owned();
+        params_object += &format!("...params");
     };
     if handler_param_type.contains("ParamsForUpdate") {
         params_object += &format!("\"id\": params.id,");
@@ -424,7 +425,7 @@ fn create_client_from_handler_params(
     };
     if handler_param_type.contains("ParamsList") {
         client_param_name = "params".to_owned();
-        params_object += &format!("params,");
+        params_object += &format!("...params,");
     };
     if handler_param_type.contains("ParamsIded") {
         params_object += &format!("\"id\": params.id");

@@ -14,6 +14,7 @@ static CLIENT_DIR: &str = "/home/eran/code/early_medical/frontend/src/lib/api/cl
 
 fn main() -> Result<()> {
     run_typeshare();
+    println!("Generating client!");
     let starting_dir = Directory::new(ROOT_DIR)?;
 
     let output_file_content = OutputFileContent::new(&starting_dir)?;
