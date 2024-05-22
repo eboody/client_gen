@@ -145,7 +145,7 @@ fn create_import_statements(output_file: &OutputFileContent, types_dir: &str) ->
     imports.push(format!("export * from \"{types_dir}\";"));
     imports.push(format!("import {{ baseApiUrl, handleError }} from \".\""));
 
-    imports.push(format!("import {{ Try, Err }} from \"@oxi\";"));
+    imports.push(format!("import {{ Try, Err }} from \"@eman/oxy\";"));
 
     imports.push(format!(
         r#"
@@ -158,6 +158,8 @@ export type ListOptions = {{
 export type DataRpcResult<T> = {{
     data: T
 }};
+
+type Option<T> = T | null;
 
 export type RpcResult<T> = {{ id: string, jsonrpc: number, result: DataRpcResult<T> }};
 
@@ -415,22 +417,22 @@ fn create_client_from_handler_params(
 
     let mut params_object = String::from("");
 
-    if handler_param_type.contains("ParamsForCreate") {
-        client_param_name = "params".to_owned();
-        params_object += &format!("...params");
-    };
-    if handler_param_type.contains("ParamsForUpdate") {
-        params_object += &format!("\"id\": params.id,");
-        params_object += &format!("\n\t    \"data\": params.data,");
-    };
-    if handler_param_type.contains("ParamsList") {
-        client_param_name = "params".to_owned();
-        params_object += &format!("...params,");
-    };
-    if handler_param_type.contains("ParamsIded") {
-        params_object += &format!("\"id\": params.id");
-        client_param_name = "params".to_owned();
-    }
+    // if handler_param_type.contains("ParamsForCreate") {
+    //     client_param_name = "params".to_owned();
+    //     params_object += &format!("...params");
+    // };
+    // if handler_param_type.contains("ParamsForUpdate") {
+    //     params_object += &format!("\"id\": params.id,");
+    //     params_object += &format!("\n\t    \"data\": params.data,");
+    // };
+    // if handler_param_type.contains("ParamsList") {
+    //     client_param_name = "params".to_owned();
+    //     params_object += &format!("...params,");
+    // };
+    // if handler_param_type.contains("ParamsIded") {
+    //     params_object += &format!("\"id\": params.id");
+    //     client_param_name = "params".to_owned();
+    // }
 
     // if handler_param_type.contains("ListOptions") {
     //     params_object += &format!("\"list_options\": {client_param_name}");
@@ -464,7 +466,7 @@ fn create_client_from_handler_params(
           jsonrpc: "2.0",
           method: "{handler_name}",
           params: {{
-            {params_object}
+            ...params 
           }},
         }}),
       }}) as unknown as Promise<RpcResult<{client_return_type}>>;
